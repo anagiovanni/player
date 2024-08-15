@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleção de Álbum</title>
+    <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+    <div class="main-container">
+        <h1>Selecione um Álbum</h1>
+        <ul id="lista-albuns">
+            <!-- Lista de álbuns será gerada aqui -->
+        </ul>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const listaAlbuns = document.getElementById('lista-albuns');
+
+            fetch('/albuns')
+                .then(resposta => resposta.json())
+                .then(dados => {
+                    if (dados.Albuns && Array.isArray(dados.Albuns)) {
+                        dados.Albuns.forEach(album => {
+                            const itemLista = document.createElement('li');
+                            itemLista.textContent = album.Nome;
+                            itemLista.addEventListener('click', () => {
+                                window.location.href = `/playlist.html?album=${album.ID}`;
+                            });
+                            listaAlbuns.appendChild(itemLista);
+                        });
+                    } else {
+                        console.error('Estrutura de álbuns não encontrada ou formato inválido.');
+                    }
+                })
+                .catch(erro => {
+                    console.error('Erro ao obter a lista de álbuns:', erro);
+                });
+        });
+    </script>
+</body>
+</html>

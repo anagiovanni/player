@@ -1,0 +1,31 @@
+{
+    "Albuns": [
+        {
+            "ID": "1",
+            "Nome": "Money For Nothing",
+            "Capa": "capa.png"
+        }
+    ],
+    "Playlists": {
+        "1": {
+            "NomeDaPlaylist": "Money For Nothing",
+            "DataDeCriacao": "1988-10-17",
+            "Artista": "Dire Straits",
+            "Capa": "capa-do-album.png",
+            "Musicas": [
+                { "Titulo": "01 - Sultans Of Swing", "Duracao": "05:46" },
+                { "Titulo": "02 - Down To The Waterline", "Duracao": "04:00" },
+                { "Titulo": "03 - Portobello Belle [Live]", "Duracao": "04:32" },
+                { "Titulo": "04 - Twisting By The Pool", "Duracao": "03:30" },
+                { "Titulo": "05 - Tunnel Of Love", "Duracao": "08:08" },
+                { "Titulo": "06 - Romeo And Juliet", "Duracao": "05:56" },
+                { "Titulo": "07 - Where Do You Think You're Going", "Duracao": "03:30" },
+                { "Titulo": "08 - Walk Of Life", "Duracao": "04:07" },
+                { "Titulo": "09 - Private Investigations", "Duracao": "05:49" },
+                { "Titulo": "10 - Telegraph Road (Live Remix)", "Duracao": "11:57" },
+                { "Titulo": "11 - Money For Nothing", "Duracao": "04:05" },
+                { "Titulo": "12 - Brothers In Arms", "Duracao": "04:48" }
+            ]
+        }
+    }
+}

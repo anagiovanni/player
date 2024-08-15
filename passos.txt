@@ -1,0 +1,387 @@
+1. Criação da Pasta
+
+A) Acessar o cmd no Modo Administrador
+B) Digitar os comandos abaixo:
+	cd/
+	cd Users
+	cd Etec
+	cd Desktop
+	mkdir player
+	cd player
+	mkdir musicas
+	mkdir public
+	code .
+
+-----------------------------------------------
+
+2. Criação do Projeto
+
+npm init -y
+npm install 
+
+-----------------------------------------------
+
+/projeto
+├── /musicas                  # Pasta contendo os arquivos de áudio
+│   ├── 01-Sultans Of Swing.mp3
+│   ├── 02-Down To The Waterline.mp3
+│   ├── 03-Portobello Belle [Live].mp3
+│   ├── 04-Twisting By The Pool.mp3
+│   ├── 05-Tunnel Of Love.mp3
+│   ├── 06-Romeo And Juliet.mp3
+│   ├── 07-Where Do You Think You're Going.mp3
+│   ├── 08-Walk Of Life.mp3
+│   ├── 09-Private Investigations.mp3
+│   ├── 10-Telegraph Road (Live Remix).mp3
+│   ├── 11-Money For Nothing.mp3
+│   └── 12-Brothers In Arms.mp3
+│
+├── /public                   # Pasta para arquivos públicos (HTML, CSS, JS, imagens)
+│   ├── estilo.css            # Arquivo de estilo CSS
+│   ├── index.html            # Arquivo HTML principal
+│   ├── script.js             # Arquivo JavaScript
+│   └── capa.png	      # Imagem da capa do álbum (substituir pelo nome correto)
+│
+├── playlist.json             # Arquivo JSON contendo a playlist
+├── player.js                 # Arquivo principal do servidor Node.js
+└── package.json              # Arquivo de configuração do Node.js e dependências (opcional)
+
+-----------------------------------------------
+
+3. Copiar as músicas para a pasta player/musicas
+
+-----------------------------------------------
+
+4. Criar um arquivo playlist.json na pasta player e adicionar o código abaixo:
+
+
+{
+    "NomeDaPlaylist": "Money For Nothing",
+    "DataDeCriacao": "1988-10-17",
+    "Artista": "Dire Straits",
+    "Genero": "Rock Britânico",
+    "Musicas": [
+        {
+            "Titulo": "01 - Sultans Of Swing",
+            "Duracao": "05:46"
+        },
+        {
+            "Titulo": "02 - Down To The Waterline",
+            "Duracao": "04:00"
+        },
+        {
+            "Titulo": "03 - Portobello Belle [Live]",
+            "Duracao": "04:32"
+        },
+        {
+            "Titulo": "04 - Twisting By The Pool",
+            "Duracao": "03:30"
+        },
+        {
+            "Titulo": "05 - Tunnel Of Love",
+            "Duracao": "08:08"
+        },
+        {
+            "Titulo": "06 - Romeo And Juliet",
+            "Duracao": "05:56"
+        },
+        {
+            "Titulo": "07 - Where Do You Think You're Going",
+            "Duracao": "03:30"
+        },
+        {
+            "Titulo": "08 - Walk Of Life",
+            "Duracao": "04:07"
+        },
+        {
+            "Titulo": "09 - Private Investigations",
+            "Duracao": "05:49"
+        },
+        {
+            "Titulo": "10 - Telegraph Road (Live Remix)",
+            "Duracao": "11:57"
+        },
+        {
+            "Titulo": "11 - Money For Nothing",
+            "Duracao": "04:05"
+        },
+        {
+            "Titulo": "12 - Brothers In Arms",
+            "Duracao": "04:48"
+        }
+    ]
+}
+
+
+-----------------------------------------------
+
+5. Criar um arquivo player.js na pasta player e adicionar o seguinte código:
+
+const express = require('express');
+const fs = require('fs');
+const path = require('path');
+
+const app = express();
+
+// Servir arquivos estáticos da pasta 'public'
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Servir arquivos de música da pasta 'musicas'
+app.use('/musicas', express.static(path.join(__dirname, 'musicas')));
+
+// Rota para fornecer a playlist em formato JSON
+app.get('/playlist', (req, res) => {
+    const caminhoArquivoJson = path.join(__dirname, 'playlist.json');
+
+    // Verificar se o arquivo JSON existe
+    if (!fs.existsSync(caminhoArquivoJson)) {
+        return res.status(404).send('Arquivo JSON não encontrado');
+    }
+
+    // Ler o arquivo JSON e enviá-lo na resposta
+    fs.readFile(caminhoArquivoJson, 'utf8', (err, dados) => {
+        if (err) {
+            console.error('Erro ao ler o arquivo JSON:', err);
+            return res.status(500).send('Erro ao ler o arquivo JSON');
+        }
+
+        // Enviar o conteúdo JSON como resposta
+        res.json(JSON.parse(dados));
+    });
+});
+
+// Iniciar o servidor na porta 3000
+app.listen(3000, () => {
+    console.log('Servidor rodando em http://localhost:3000');
+});
+
+-----------------------------------------------
+
+6. Na pasta públic adicionar o arquivo index.html com o seguinte código:
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playlist de Música</title>
+    <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="album-info">
+            <img id="album-art" src="capa.png" alt="Capa do Álbum">
+            <h1 id="nome-playlist">Playlist</h1>
+            <p id="detalhes-playlist"></p>
+            <button class="play-btn" onclick="tocarPrimeiraMusica()">PLAY</button>
+        </div>
+        <div class="playlist">
+            <ul id="lista-musicas"></ul>
+        </div>
+    </div>
+    <div class="player-container">
+        <audio id="player-audio" controls></audio>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+-----------------------------------------------
+
+7. Adicionar um arquivo estilo.css na pasta public com o seguinte código:
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #121212;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.main-container {
+    display: flex;
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.album-info {
+    width: 300px;
+    text-align: center;
+    padding-right: 20px;
+}
+
+.album-info img {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.album-info h1 {
+    margin: 10px 0;
+    color: #ffffff;
+    font-size: 1.8em;
+}
+
+.album-info p {
+    color: #b3b3b3;
+    font-size: 0.9em;
+    margin-bottom: 20px;
+}
+
+.play-btn {
+    background-color: #1db954;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.play-btn:hover {
+    background-color: #1ed760;
+}
+
+.playlist {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-bottom: 60px; /* Adiciona espaço para o player */
+}
+
+#lista-musicas {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#lista-musicas li {
+    background: #282828;
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-size: 0.9em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#lista-musicas li:hover {
+    background: #333333;
+}
+
+#lista-musicas li.active {
+    background: #1db954;
+    color: white;
+}
+
+.player-container {
+    width: 100%;
+    background-color: #181818;
+    padding: 10px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+#player-audio {
+    width: 100%;
+    border-radius: 5px;
+}
+
+-----------------------------------------------
+
+8. Adicionar um arquivo script.js na pasta public com o seguinte código:
+
+document.addEventListener('DOMContentLoaded', () => {
+    const nomePlaylist = document.getElementById('nome-playlist');
+    const detalhesPlaylist = document.getElementById('detalhes-playlist');
+    const listaMusicas = document.getElementById('lista-musicas');
+    const playerAudio = document.getElementById('player-audio');
+
+    let primeiraMusica = null;
+    let musicas = [];
+
+    fetch('/playlist')
+        .then(resposta => resposta.json())
+        .then(dados => {
+            if (dados.Musicas && Array.isArray(dados.Musicas)) {
+                nomePlaylist.textContent = dados.NomeDaPlaylist;
+                detalhesPlaylist.textContent = `Criado por: ${dados.Artista} em ${dados.DataDeCriacao}`;
+
+                dados.Musicas.forEach((musica, indice) => {
+                    const itemLista = document.createElement('li');
+                    itemLista.textContent = `${musica.Titulo} - ${dados.Artista}`;
+                    itemLista.addEventListener('click', () => {
+                        tocarMusica(indice);
+                    });
+                    listaMusicas.appendChild(itemLista);
+
+                    if (indice === 0) {
+                        primeiraMusica = musica.Titulo; // Salva a primeira música para o botão PLAY
+                    }
+                    musicas.push(musica.Titulo); // Armazena as músicas na lista
+                });
+            } else {
+                console.error('Estrutura de músicas não encontrada ou formato inválido.');
+            }
+        })
+        .catch(erro => {
+            console.error('Erro ao obter a playlist:', erro);
+        });
+
+    playerAudio.addEventListener('ended', () => {
+        tocarProximaMusica();
+    });
+
+    function tocarMusica(indice) {
+        const titulo = musicas[indice];
+        if (titulo) {
+            const caminhoMusica = `/musicas/${titulo}.mp3`;
+            playerAudio.src = caminhoMusica;
+            playerAudio.play();
+
+            document.querySelectorAll('#lista-musicas li').forEach((item, i) => {
+                item.classList.toggle('active', i === indice);
+            });
+            playerAudio.setAttribute('data-current-index', indice);
+        }
+    }
+
+    function tocarProximaMusica() {
+        const currentIndex = parseInt(playerAudio.getAttribute('data-current-index'), 10);
+        const nextIndex = (currentIndex + 1) % musicas.length; // Vai para a próxima música ou volta ao início
+        tocarMusica(nextIndex);
+    }
+
+    window.tocarPrimeiraMusica = function() {
+        tocarMusica(0); // Toca a primeira música
+    };
+});
+
+-----------------------------------------------
+
+10. Copiar a imagem capa.png para a pasta public
+
+-----------------------------------------------
+
+11. Executar o seguinte comando no cmd
+
+node player.js
+
+-----------------------------------------------
+
+12. Acessar o endereço abaixo no navegador para acessar a aplicação
+
+http://localhost:3000
+
