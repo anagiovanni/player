@@ -377,7 +377,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 11. Executar o seguinte comando no cmd
 
-node player.js
+node server.js
 
 -----------------------------------------------
 
